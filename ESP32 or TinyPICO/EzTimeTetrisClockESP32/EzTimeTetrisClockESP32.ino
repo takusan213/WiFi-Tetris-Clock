@@ -58,7 +58,8 @@ char password[] = "password"; // your network key
 
 // Set a timezone using the following list
 // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-#define MYTIMEZONE "Europe/Dublin"
+//#define MYTIMEZONE "Europe/Dublin"
+#define MYTIMEZONE "Asia/Tokyo"
 
 // Sets whether the clock should be 12 hour format or not.
 bool twelveHourFormat = true;
@@ -77,9 +78,11 @@ bool forceRefresh = true;
 #define P_C 18
 #define P_D 5
 #define P_E 15
-#define P_OE 26 //TinyPICO
+//#define P_OE 26 //TinyPICO
 //#define P_OE 21 //Huzzah32
 //#define P_OE 2 // Generic ESP32
+#define P_OE 16 // ESP32-DevKitC
+
 // ---------------------
 
 portMUX_TYPE timerMux = portMUX_INITIALIZER_UNLOCKED;
@@ -87,8 +90,8 @@ hw_timer_t * timer = NULL;
 hw_timer_t * animationTimer = NULL;
 
 // PxMATRIX display(32,16,P_LAT, P_OE,P_A,P_B,P_C);
-// PxMATRIX display(64,32,P_LAT, P_OE,P_A,P_B,P_C,P_D);
-PxMATRIX display(64, 32, P_LAT, P_OE, P_A, P_B, P_C, P_D, P_E);
+ PxMATRIX display(64,32,P_LAT, P_OE,P_A,P_B,P_C,P_D);
+//PxMATRIX display(64, 32, P_LAT, P_OE, P_A, P_B, P_C, P_D, P_E);
 
 TetrisMatrixDraw tetris(display); // Main clock
 TetrisMatrixDraw tetris2(display); // The "M" of AM/PM
@@ -214,9 +217,12 @@ void setup() {
   // as it will crash!
 
   // Intialise display library
-  display.begin(16, SPI_BUS_CLK, 27, SPI_BUS_MISO, SPI_BUS_SS); // TinyPICO
-  //display.begin(16); // Generic ESP32 including Huzzah
+//  display.begin(16, SPI_BUS_CLK, 27, SPI_BUS_MISO, SPI_BUS_SS); // TinyPICO
+  display.begin(16); // Generic ESP32 including Huzzah
   display.flushDisplay();
+
+  // Adding delay to low speed multiplexer
+  display.setMuxDelay(1,1,1,1,1);
 
   // Setup timer for driving display
   timer = timerBegin(0, 80, true);
